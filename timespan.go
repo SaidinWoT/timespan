@@ -116,7 +116,7 @@ func (s Span) IsZero() bool {
 func (s Span) Offset(d time.Duration) Span {
 	return Span{
 		start: s.start.Add(d),
-		end:   s.start.Add(d),
+		end:   s.end.Add(d),
 	}
 }
 

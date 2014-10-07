@@ -136,6 +136,132 @@ func TestEqual(t *testing.T) {
 	}
 }
 
+func TestBorders(t *testing.T) {
+    if spans[0].Borders(spans[0]) {
+        t.Error("Span borders itself.")
+    }
+    if spans[0].Borders(spans[1]) {
+        t.Error("Span borders an encompassing span.")
+    }
+    if spans[0].Borders(spans[5]) {
+        t.Error("Span borders a non-bordering separate span.")
+    }
+    if !spans[0].Borders(spans[3]) {
+        t.Error("Span does not border a bordering span.")
+    }
+    if !spans[3].Borders(spans[0]) {
+        t.Error("Span does not border a bordering span.")
+    }
+}
+
+func TestContainsTime(t *testing.T) {
+    if spans[4].ContainsTime(times[0]) {
+        t.Error("Span contains time preceding its start.")
+    }
+    if !spans[4].ContainsTime(times[1]) {
+        t.Error("Span does not contain start time.")
+    }
+    if !spans[4].ContainsTime(times[2]) {
+        t.Error("Span does not contain time in middle.")
+    }
+    if !spans[4].ContainsTime(times[3]) {
+        t.Error("Span does not contain end time.")
+    }
+}
+
+func TestContains(t *testing.T) {
+    if spans[4].Contains(spans[0]) {
+        t.Error("Span contains preceding span.")
+    }
+    if spans[4].Contains(spans[1]) {
+        t.Error("Span contains overlapping span.")
+    }
+    if !spans[4].Contains(spans[3]) {
+        t.Error("Span does not contain fully contained span.")
+    }
+    if !spans[4].Contains(spans[4]) {
+        t.Error("Span does not contain itself.")
+    }
+    if spans[1].Contains(spans[5]) {
+        t.Error("Span contains following span.")
+    }
+}
+
+func TestEncompass(t *testing.T) {
+    if spans[0].Encompass(spans[0]) != spans[0] {
+        t.Error("Span encompassing itself is not equal to identity.")
+    }
+    if spans[0].Encompass(spans[5]) != spans[2] {
+        t.Error("Span encompassing separate span does not contain both.")
+    }
+    if spans[0].Encompass(spans[1]) != spans[1] {
+        t.Error("Span encompassing an encompassing span is not equal to the encompassing span.")
+    }
+    if spans[2].Encompass(spans[3]) != spans[2] {
+        t.Error("Span encompassing a contained span is not equal to identity.")
+    }
+}
+
+func TestGap(t *testing.T) {
+    if !spans[0].Gap(spans[0]).IsZero() {
+        t.Error("Gap with self is not zero.")
+    }
+    if !spans[0].Gap(spans[1]).IsZero() {
+        t.Error("Gap with encompassing span is not zero.")
+    }
+    if spans[0].Gap(spans[5]) != spans[3] {
+        t.Error("Gap not properly generated.")
+    }
+    s := spans[0].Gap(spans[3])
+    if s.Start() != times[1] || s.End() != times[1] {
+        t.Error("Gap from bordering spans is not their border.")
+    }
+}
+
+func TestIntersection(t *testing.T) {
+    if !spans[0].Intersection(spans[5]).IsZero() {
+        t.Error("Intersection of non-intersecting spans is not zero.")
+    }
+    if !spans[0].Intersection(spans[3]).IsZero() {
+        t.Error("Intersection of bordering spans is not zero.")
+    }
+    if spans[0].Intersection(spans[0]) != spans[0] {
+        t.Error("Intersection with self is not identity.")
+    }
+    if spans[0].Intersection(spans[2]) != spans[0] {
+        t.Error("Intersection with encompassing span is not identity.")
+    }
+    if spans[1].Intersection(spans[4]) != spans[3] {
+        t.Error("Intersection improperly generated.")
+    }
+}
+
+func TestOffset(t *testing.T) {
+    if spans[0].Offset(durations[0]) != spans[3] {
+        t.Error("Offset created improper span.")
+    }
+    if spans[5].Offset(-durations[1]) != spans[0] {
+        t.Error("Negative offset created improper span.")
+    }
+    if spans[0].Offset(time.Duration(0)) != spans[0] {
+        t.Error("Zero offset does not result in identity.")
+    }
+}
+
+func TestOffsetDate(t *testing.T) {
+    s := timespan.NewSpan(times[0].AddDate(1, 1, 1), durations[0])
+    if spans[0].OffsetDate(1, 1, 1) != s {
+        t.Error("OffsetDate created improper span.")
+    }
+    s = timespan.NewSpan(times[0].AddDate(-1, -1, -1), durations[0])
+    if spans[0].OffsetDate(-1, -1, -1) != s {
+        t.Error("Negative OffsetDate created improper span.")
+    }
+    if spans[0].OffsetDate(0, 0, 0) != spans[0] {
+        t.Error("Zero OffsetDate does not result in identity.")
+    }
+}
+
 var (
     d time.Duration
     r timespan.Span
