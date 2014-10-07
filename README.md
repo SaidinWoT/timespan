@@ -13,7 +13,7 @@ Installation
 
 Install timespan using the "go get" command:
 
-	go get github.com/SaidinWoT/timespan/timespan
+	go get github.com/SaidinWoT/timespan
 
 Contributing
 ------------
