@@ -93,16 +93,17 @@ func (s Span) Gap(r Span) Span {
 	}
 }
 
-//Intersection returns a span corresponding to the non-zero overlap of s and r.
-//If s and r do not overlap, a zero span is returned.
-func (s Span) Intersection(r Span) Span {
+//Intersection returns both a span corresponding to the non-zero overlap of
+//s and r and a bool indicating whether such an overlap existed.
+//If s and r do not overlap, a zero span is returned with false.
+func (s Span) Intersection(r Span) (Span, bool) {
 	if !s.Overlaps(r) {
-		return Span{}
+		return Span{}, false
 	}
 	return Span{
 		start: tmax(s.start, r.start),
 		end:   tmin(s.end, r.end),
-	}
+	}, true
 }
 
 //IsZero reports whether s represents the zero-length span starting and ending

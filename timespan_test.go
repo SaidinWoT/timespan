@@ -219,19 +219,19 @@ func TestGap(t *testing.T) {
 }
 
 func TestIntersection(t *testing.T) {
-    if !spans[0].Intersection(spans[5]).IsZero() {
+    if _, b := spans[0].Intersection(spans[5]); b {
         t.Error("Intersection of non-intersecting spans is not zero.")
     }
-    if !spans[0].Intersection(spans[3]).IsZero() {
+    if _, b := spans[0].Intersection(spans[3]); b {
         t.Error("Intersection of bordering spans is not zero.")
     }
-    if spans[0].Intersection(spans[0]) != spans[0] {
+    if s, _ := spans[0].Intersection(spans[0]); s != spans[0] {
         t.Error("Intersection with self is not identity.")
     }
-    if spans[0].Intersection(spans[2]) != spans[0] {
+    if s, _:= spans[0].Intersection(spans[2]); s != spans[0] {
         t.Error("Intersection with encompassing span is not identity.")
     }
-    if spans[1].Intersection(spans[4]) != spans[3] {
+    if s, _ := spans[1].Intersection(spans[4]); s != spans[3] {
         t.Error("Intersection improperly generated.")
     }
 }
@@ -352,7 +352,7 @@ func BenchmarkGap(b *testing.B) {
 func BenchmarkIntersection(b *testing.B) {
     s, r = spans[1], spans[4]
     for i := 0; i < b.N; i++ {
-        _ = s.Intersection(r)
+        _, _ = s.Intersection(r)
     }
 }
 
