@@ -14,8 +14,8 @@ type Span struct {
 	start, end time.Time
 }
 
-//Newspan creates a new span with the given start instant and duration.
-func NewSpan(t time.Time, d time.Duration) Span {
+//New creates a new span with the given start instant and duration.
+func New(t time.Time, d time.Duration) Span {
 	return Span{
 		start: t,
 		end:   t.Add(d),
