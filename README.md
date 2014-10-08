@@ -21,4 +21,4 @@ Contributions are welcome. Simply send a pull request my way.
 
 License
 -------
-timespan is available under the [MIT License](http://github.com/SaidinWoT/timespan/LICENSE)
+timespan is available under the [MIT License](https://github.com/SaidinWoT/timespan/blob/master/LICENSE)
