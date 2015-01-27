@@ -137,264 +137,264 @@ func TestEqual(t *testing.T) {
 }
 
 func TestBorders(t *testing.T) {
-    if spans[0].Borders(spans[0]) {
-        t.Error("Span borders itself.")
-    }
-    if spans[0].Borders(spans[1]) {
-        t.Error("Span borders an encompassing span.")
-    }
-    if spans[0].Borders(spans[5]) {
-        t.Error("Span borders a non-bordering separate span.")
-    }
-    if !spans[0].Borders(spans[3]) {
-        t.Error("Span does not border a bordering span.")
-    }
-    if !spans[3].Borders(spans[0]) {
-        t.Error("Span does not border a bordering span.")
-    }
+	if spans[0].Borders(spans[0]) {
+		t.Error("Span borders itself.")
+	}
+	if spans[0].Borders(spans[1]) {
+		t.Error("Span borders an encompassing span.")
+	}
+	if spans[0].Borders(spans[5]) {
+		t.Error("Span borders a non-bordering separate span.")
+	}
+	if !spans[0].Borders(spans[3]) {
+		t.Error("Span does not border a bordering span.")
+	}
+	if !spans[3].Borders(spans[0]) {
+		t.Error("Span does not border a bordering span.")
+	}
 }
 
 func TestContainsTime(t *testing.T) {
-    if spans[4].ContainsTime(times[0]) {
-        t.Error("Span contains time preceding its start.")
-    }
-    if !spans[4].ContainsTime(times[1]) {
-        t.Error("Span does not contain start time.")
-    }
-    if !spans[4].ContainsTime(times[2]) {
-        t.Error("Span does not contain time in middle.")
-    }
-    if !spans[4].ContainsTime(times[3]) {
-        t.Error("Span does not contain end time.")
-    }
+	if spans[4].ContainsTime(times[0]) {
+		t.Error("Span contains time preceding its start.")
+	}
+	if !spans[4].ContainsTime(times[1]) {
+		t.Error("Span does not contain start time.")
+	}
+	if !spans[4].ContainsTime(times[2]) {
+		t.Error("Span does not contain time in middle.")
+	}
+	if !spans[4].ContainsTime(times[3]) {
+		t.Error("Span does not contain end time.")
+	}
 }
 
 func TestContains(t *testing.T) {
-    if spans[4].Contains(spans[0]) {
-        t.Error("Span contains preceding span.")
-    }
-    if spans[4].Contains(spans[1]) {
-        t.Error("Span contains overlapping span.")
-    }
-    if !spans[4].Contains(spans[3]) {
-        t.Error("Span does not contain fully contained span.")
-    }
-    if !spans[4].Contains(spans[4]) {
-        t.Error("Span does not contain itself.")
-    }
-    if spans[1].Contains(spans[5]) {
-        t.Error("Span contains following span.")
-    }
+	if spans[4].Contains(spans[0]) {
+		t.Error("Span contains preceding span.")
+	}
+	if spans[4].Contains(spans[1]) {
+		t.Error("Span contains overlapping span.")
+	}
+	if !spans[4].Contains(spans[3]) {
+		t.Error("Span does not contain fully contained span.")
+	}
+	if !spans[4].Contains(spans[4]) {
+		t.Error("Span does not contain itself.")
+	}
+	if spans[1].Contains(spans[5]) {
+		t.Error("Span contains following span.")
+	}
 }
 
 func TestEncompass(t *testing.T) {
-    if spans[0].Encompass(spans[0]) != spans[0] {
-        t.Error("Span encompassing itself is not equal to identity.")
-    }
-    if spans[0].Encompass(spans[5]) != spans[2] {
-        t.Error("Span encompassing separate span does not contain both.")
-    }
-    if spans[0].Encompass(spans[1]) != spans[1] {
-        t.Error("Span encompassing an encompassing span is not equal to the encompassing span.")
-    }
-    if spans[2].Encompass(spans[3]) != spans[2] {
-        t.Error("Span encompassing a contained span is not equal to identity.")
-    }
+	if spans[0].Encompass(spans[0]) != spans[0] {
+		t.Error("Span encompassing itself is not equal to identity.")
+	}
+	if spans[0].Encompass(spans[5]) != spans[2] {
+		t.Error("Span encompassing separate span does not contain both.")
+	}
+	if spans[0].Encompass(spans[1]) != spans[1] {
+		t.Error("Span encompassing an encompassing span is not equal to the encompassing span.")
+	}
+	if spans[2].Encompass(spans[3]) != spans[2] {
+		t.Error("Span encompassing a contained span is not equal to identity.")
+	}
 }
 
 func TestGap(t *testing.T) {
-    if !spans[0].Gap(spans[0]).IsZero() {
-        t.Error("Gap with self is not zero.")
-    }
-    if !spans[0].Gap(spans[1]).IsZero() {
-        t.Error("Gap with encompassing span is not zero.")
-    }
-    if spans[0].Gap(spans[5]) != spans[3] {
-        t.Error("Gap not properly generated.")
-    }
-    s := spans[0].Gap(spans[3])
-    if s.Start() != times[1] || s.End() != times[1] {
-        t.Error("Gap from bordering spans is not their border.")
-    }
+	if !spans[0].Gap(spans[0]).IsZero() {
+		t.Error("Gap with self is not zero.")
+	}
+	if !spans[0].Gap(spans[1]).IsZero() {
+		t.Error("Gap with encompassing span is not zero.")
+	}
+	if spans[0].Gap(spans[5]) != spans[3] {
+		t.Error("Gap not properly generated.")
+	}
+	s := spans[0].Gap(spans[3])
+	if s.Start() != times[1] || s.End() != times[1] {
+		t.Error("Gap from bordering spans is not their border.")
+	}
 }
 
 func TestIntersection(t *testing.T) {
-    if _, b := spans[0].Intersection(spans[5]); b {
-        t.Error("Intersection of non-intersecting spans is not zero.")
-    }
-    if _, b := spans[0].Intersection(spans[3]); b {
-        t.Error("Intersection of bordering spans is not zero.")
-    }
-    if s, _ := spans[0].Intersection(spans[0]); s != spans[0] {
-        t.Error("Intersection with self is not identity.")
-    }
-    if s, _:= spans[0].Intersection(spans[2]); s != spans[0] {
-        t.Error("Intersection with encompassing span is not identity.")
-    }
-    if s, _ := spans[1].Intersection(spans[4]); s != spans[3] {
-        t.Error("Intersection improperly generated.")
-    }
+	if _, b := spans[0].Intersection(spans[5]); b {
+		t.Error("Intersection of non-intersecting spans is not zero.")
+	}
+	if _, b := spans[0].Intersection(spans[3]); b {
+		t.Error("Intersection of bordering spans is not zero.")
+	}
+	if s, _ := spans[0].Intersection(spans[0]); s != spans[0] {
+		t.Error("Intersection with self is not identity.")
+	}
+	if s, _ := spans[0].Intersection(spans[2]); s != spans[0] {
+		t.Error("Intersection with encompassing span is not identity.")
+	}
+	if s, _ := spans[1].Intersection(spans[4]); s != spans[3] {
+		t.Error("Intersection improperly generated.")
+	}
 }
 
 func TestOffset(t *testing.T) {
-    if spans[0].Offset(durations[0]) != spans[3] {
-        t.Error("Offset created improper span.")
-    }
-    if spans[5].Offset(-durations[1]) != spans[0] {
-        t.Error("Negative offset created improper span.")
-    }
-    if spans[0].Offset(time.Duration(0)) != spans[0] {
-        t.Error("Zero offset does not result in identity.")
-    }
+	if spans[0].Offset(durations[0]) != spans[3] {
+		t.Error("Offset created improper span.")
+	}
+	if spans[5].Offset(-durations[1]) != spans[0] {
+		t.Error("Negative offset created improper span.")
+	}
+	if spans[0].Offset(time.Duration(0)) != spans[0] {
+		t.Error("Zero offset does not result in identity.")
+	}
 }
 
 func TestOffsetDate(t *testing.T) {
-    s := timespan.NewSpan(times[0].AddDate(1, 1, 1), durations[0])
-    if spans[0].OffsetDate(1, 1, 1) != s {
-        t.Error("OffsetDate created improper span.")
-    }
-    s = timespan.NewSpan(times[0].AddDate(-1, -1, -1), durations[0])
-    if spans[0].OffsetDate(-1, -1, -1) != s {
-        t.Error("Negative OffsetDate created improper span.")
-    }
-    if spans[0].OffsetDate(0, 0, 0) != spans[0] {
-        t.Error("Zero OffsetDate does not result in identity.")
-    }
+	s := timespan.NewSpan(times[0].AddDate(1, 1, 1), durations[0])
+	if spans[0].OffsetDate(1, 1, 1) != s {
+		t.Error("OffsetDate created improper span.")
+	}
+	s = timespan.NewSpan(times[0].AddDate(-1, -1, -1), durations[0])
+	if spans[0].OffsetDate(-1, -1, -1) != s {
+		t.Error("Negative OffsetDate created improper span.")
+	}
+	if spans[0].OffsetDate(0, 0, 0) != spans[0] {
+		t.Error("Zero OffsetDate does not result in identity.")
+	}
 }
 
 var (
-    d time.Duration
-    r timespan.Span
-    s timespan.Span
-    t time.Time
+	d time.Duration
+	r timespan.Span
+	s timespan.Span
+	t time.Time
 )
 
 func BenchmarkStart(b *testing.B) {
-    s = spans[0]
-    for i := 0; i < b.N; i++ {
-        t = s.Start()
-    }
+	s = spans[0]
+	for i := 0; i < b.N; i++ {
+		t = s.Start()
+	}
 }
 
 func BenchmarkEnd(b *testing.B) {
-    s = spans[0]
-    for i := 0; i < b.N; i++ {
-        t = s.End()
-    }
+	s = spans[0]
+	for i := 0; i < b.N; i++ {
+		t = s.End()
+	}
 }
 
 func BenchmarkDuration(b *testing.B) {
-    s = spans[0]
-    for i := 0; i < b.N; i++ {
-        d = s.Duration()
-    }
+	s = spans[0]
+	for i := 0; i < b.N; i++ {
+		d = s.Duration()
+	}
 }
 
 func BenchmarkAfter(b *testing.B) {
-    s = spans[5]
-    t = times[0]
-    for i := 0; i < b.N; i++ {
-        _ = s.After(t)
-    }
+	s = spans[5]
+	t = times[0]
+	for i := 0; i < b.N; i++ {
+		_ = s.After(t)
+	}
 }
 
 func BenchmarkBefore(b *testing.B) {
-    s = spans[5]
-    t = times[0]
-    for i := 0; i < b.N; i++ {
-        _ = s.Before(t)
-    }
+	s = spans[5]
+	t = times[0]
+	for i := 0; i < b.N; i++ {
+		_ = s.Before(t)
+	}
 }
 
 func BenchmarkFollows(b *testing.B) {
-    s, r = spans[5], spans[0]
-    for i := 0; i < b.N; i++ {
-        _ = s.Follows(r)
-    }
+	s, r = spans[5], spans[0]
+	for i := 0; i < b.N; i++ {
+		_ = s.Follows(r)
+	}
 }
 
 func BenchmarkPrecedes(b *testing.B) {
-    s, r = spans[5], spans[0]
-    for i := 0; i < b.N; i++ {
-        _ = s.Precedes(r)
-    }
+	s, r = spans[5], spans[0]
+	for i := 0; i < b.N; i++ {
+		_ = s.Precedes(r)
+	}
 }
 
 func BenchmarkContainsTime(b *testing.B) {
-    s = spans[2]
-    t = times[1]
-    for i := 0; i < b.N; i++ {
-        _ = s.ContainsTime(t)
-    }
+	s = spans[2]
+	t = times[1]
+	for i := 0; i < b.N; i++ {
+		_ = s.ContainsTime(t)
+	}
 }
 
 func BenchmarkContains(b *testing.B) {
-    s, r = spans[2], spans[3]
-    for i := 0; i < b.N; i++ {
-        _ = s.Contains(r)
-    }
+	s, r = spans[2], spans[3]
+	for i := 0; i < b.N; i++ {
+		_ = s.Contains(r)
+	}
 }
 
 func BenchmarkEncompass(b *testing.B) {
-    s, r = spans[0], spans[5]
-    for i := 0; i < b.N; i++ {
-        _ = s.Encompass(r)
-    }
+	s, r = spans[0], spans[5]
+	for i := 0; i < b.N; i++ {
+		_ = s.Encompass(r)
+	}
 }
 
 func BenchmarkGap(b *testing.B) {
-    s, r = spans[0], spans[5]
-    for i := 0; i < b.N; i++ {
-        _ = s.Gap(r)
-    }
+	s, r = spans[0], spans[5]
+	for i := 0; i < b.N; i++ {
+		_ = s.Gap(r)
+	}
 }
 
 func BenchmarkIntersection(b *testing.B) {
-    s, r = spans[1], spans[4]
-    for i := 0; i < b.N; i++ {
-        _, _ = s.Intersection(r)
-    }
+	s, r = spans[1], spans[4]
+	for i := 0; i < b.N; i++ {
+		_, _ = s.Intersection(r)
+	}
 }
 
 func BenchmarkOffset(b *testing.B) {
-    s = spans[0]
-    d = durations[1]
-    for i := 0; i < b.N; i++ {
-        r = s.Offset(d)
-    }
+	s = spans[0]
+	d = durations[1]
+	for i := 0; i < b.N; i++ {
+		r = s.Offset(d)
+	}
 }
 
 func BenchmarkOffsetDate(b *testing.B) {
-    s = spans[0]
-    for i := 0; i < b.N; i++ {
-        r = s.OffsetDate(1, 1, 1)
-    }
+	s = spans[0]
+	for i := 0; i < b.N; i++ {
+		r = s.OffsetDate(1, 1, 1)
+	}
 }
 
 func BenchmarkOverlaps(b *testing.B) {
-    s, r = spans[0], spans[1]
-    for i := 0; i < b.N; i++ {
-        _ = s.Overlaps(r)
-    }
+	s, r = spans[0], spans[1]
+	for i := 0; i < b.N; i++ {
+		_ = s.Overlaps(r)
+	}
 }
 
 func BenchmarkIsZero(b *testing.B) {
-    s = spans[0]
-    for i := 0; i < b.N; i++ {
-        _ = s.IsZero()
-    }
+	s = spans[0]
+	for i := 0; i < b.N; i++ {
+		_ = s.IsZero()
+	}
 }
 
 func BenchmarkEqual(b *testing.B) {
-    s, r = spans[0], spans[1]
-    for i := 0; i < b.N; i++ {
-        _ = s.Equal(r)
-    }
+	s, r = spans[0], spans[1]
+	for i := 0; i < b.N; i++ {
+		_ = s.Equal(r)
+	}
 }
 
 func BenchmarkBorders(b *testing.B) {
-    s, r = spans[0], spans[3]
-    for i := 0; i < b.N; i++ {
-        _ = s.Borders(r)
-    }
+	s, r = spans[0], spans[3]
+	for i := 0; i < b.N; i++ {
+		_ = s.Borders(r)
+	}
 }

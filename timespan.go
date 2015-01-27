@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-//The span type represents an inclusive range between two time instants.
+//Span represents an inclusive range between two time instants.
 //
 //The zero value of type span has both start and end times set to the zero value
 //of type Time. The zero value is returned by the Intersection and Gap methods
