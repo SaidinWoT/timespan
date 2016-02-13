@@ -16,6 +16,7 @@ var durations = []time.Duration{
 	time.Duration(2) * time.Hour,
 	time.Duration(4) * time.Hour,
 	time.Duration(6) * time.Hour,
+	time.Duration(-2) * time.Hour,
 }
 
 var spans = []Span{
@@ -25,6 +26,7 @@ var spans = []Span{
 	New(times[1], durations[0]), // 4:00 - 6:00
 	New(times[1], durations[1]), // 4:00 - 8:00
 	New(times[2], durations[0]), // 6:00 - 8:00
+	New(times[1], durations[3]), // 2:00 - 4:00
 }
 
 func TestNew(t *testing.T) {
@@ -33,6 +35,13 @@ func TestNew(t *testing.T) {
 	}
 	if spans[0].End() != times[1] {
 		t.Error("Improper timespan end value.")
+	}
+
+	if spans[6].Start() != times[0] {
+		t.Error("Improper timespan start value for negative duration.")
+	}
+	if spans[6].End() != times[1] {
+		t.Error("Improper timespan end value for negative duration.")
 	}
 }
 
@@ -132,6 +141,9 @@ func TestEqual(t *testing.T) {
 	}
 	if spans[1].Equal(spans[4]) { // 2:00 - 6:00 =? 4:00 - 8:00
 		t.Error("Span reported as equal to overlapping span.")
+	}
+	if !spans[0].Equal(spans[6]) { // 2:00 - 4:00 =? 2:00 - 4:00
+		t.Error("Span reported as not equal.")
 	}
 }
 
