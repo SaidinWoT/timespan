@@ -1,9 +1,8 @@
-package timespan_test
+package timespan
 
 import (
 	"testing"
 	"time"
-	"timespan"
 )
 
 var times = []time.Time{
@@ -17,23 +16,32 @@ var durations = []time.Duration{
 	time.Duration(2) * time.Hour,
 	time.Duration(4) * time.Hour,
 	time.Duration(6) * time.Hour,
+	time.Duration(-2) * time.Hour,
 }
 
-var spans = []timespan.Span{
-	timespan.NewSpan(times[0], durations[0]), // 2:00 - 4:00
-	timespan.NewSpan(times[0], durations[1]), // 2:00 - 6:00
-	timespan.NewSpan(times[0], durations[2]), // 2:00 - 8:00
-	timespan.NewSpan(times[1], durations[0]), // 4:00 - 6:00
-	timespan.NewSpan(times[1], durations[1]), // 4:00 - 8:00
-	timespan.NewSpan(times[2], durations[0]), // 6:00 - 8:00
+var spans = []Span{
+	New(times[0], durations[0]), // 2:00 - 4:00
+	New(times[0], durations[1]), // 2:00 - 6:00
+	New(times[0], durations[2]), // 2:00 - 8:00
+	New(times[1], durations[0]), // 4:00 - 6:00
+	New(times[1], durations[1]), // 4:00 - 8:00
+	New(times[2], durations[0]), // 6:00 - 8:00
+	New(times[1], durations[3]), // 2:00 - 4:00
 }
 
-func TestNewSpan(t *testing.T) {
+func TestNew(t *testing.T) {
 	if spans[0].Start() != times[0] {
 		t.Error("Improper timespan start value.")
 	}
 	if spans[0].End() != times[1] {
 		t.Error("Improper timespan end value.")
+	}
+
+	if spans[6].Start() != times[0] {
+		t.Error("Improper timespan start value for negative duration.")
+	}
+	if spans[6].End() != times[1] {
+		t.Error("Improper timespan end value for negative duration.")
 	}
 }
 
@@ -133,6 +141,9 @@ func TestEqual(t *testing.T) {
 	}
 	if spans[1].Equal(spans[4]) { // 2:00 - 6:00 =? 4:00 - 8:00
 		t.Error("Span reported as equal to overlapping span.")
+	}
+	if !spans[0].Equal(spans[6]) { // 2:00 - 4:00 =? 2:00 - 4:00
+		t.Error("Span reported as not equal.")
 	}
 }
 
@@ -249,11 +260,11 @@ func TestOffset(t *testing.T) {
 }
 
 func TestOffsetDate(t *testing.T) {
-	s := timespan.NewSpan(times[0].AddDate(1, 1, 1), durations[0])
+	s := New(times[0].AddDate(1, 1, 1), durations[0])
 	if spans[0].OffsetDate(1, 1, 1) != s {
 		t.Error("OffsetDate created improper span.")
 	}
-	s = timespan.NewSpan(times[0].AddDate(-1, -1, -1), durations[0])
+	s = New(times[0].AddDate(-1, -1, -1), durations[0])
 	if spans[0].OffsetDate(-1, -1, -1) != s {
 		t.Error("Negative OffsetDate created improper span.")
 	}
@@ -264,8 +275,8 @@ func TestOffsetDate(t *testing.T) {
 
 var (
 	d time.Duration
-	r timespan.Span
-	s timespan.Span
+	r Span
+	s Span
 	t time.Time
 )
 
