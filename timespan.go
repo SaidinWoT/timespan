@@ -2,6 +2,9 @@
 package timespan
 
 import (
+	"encoding/json"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -12,6 +15,47 @@ import (
 //when there is no span fitting their purposes.
 type Span struct {
 	start, end time.Time
+}
+
+// Serialize the span struct into a specially formatted string:
+// since the time.Time marshaller already supports marshalling to
+// an RFC3339 formatted string we will just glue the start and end
+// times together with a pipe delimiter
+func (s *Span) MarshalJSON() ([]byte, error) {
+	start, err := s.start.MarshalText()
+	if err != nil {
+		return nil, err
+	}
+
+	end, err := s.end.MarshalText()
+	if err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(fmt.Sprintf("%s|%s", start, end))
+}
+
+// Deserialize the specially formatted span string back into the struct
+func (s *Span) UnmarshalJSON(data []byte) error {
+	var span string
+	if err := json.Unmarshal(data, &span); err != nil {
+		return err
+	}
+
+	split := strings.Split(span, "|")
+
+	start := time.Time{}
+	if err := start.UnmarshalText([]byte(split[0])); err != nil {
+		return err
+	}
+
+	end := time.Time{}
+	if err := end.UnmarshalText([]byte(split[1])); err != nil {
+		return err
+	}
+
+	s.start, s.end = start, end
+	return nil
 }
 
 //New creates a new span with the given start instant and duration.

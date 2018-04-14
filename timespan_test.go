@@ -45,6 +45,23 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestSerialization(t *testing.T) {
+	json, err := spans[0].MarshalJSON()
+	if err != nil {
+		t.Error("Failed to marshall json:", err)
+	}
+	span := Span{}
+	if err := span.UnmarshalJSON(json); err != nil {
+		t.Error("Failed to unmarshal json:", err)
+	}
+	if span.Start() != times[0] {
+		t.Error("Deserialization failure: wrong start value:", span.Start())
+	}
+	if span.End() != times[1] {
+		t.Error("Deserialization failure: wrong end value:", span.End())
+	}
+}
+
 func TestAfter(t *testing.T) {
 	if spans[5].After(times[3]) { // 6:00 - 8:00 >? 8:00
 		t.Error("Span reported as after its end time.")
