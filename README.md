@@ -6,14 +6,14 @@ timespan is a [Go](http://golang.org/) library for interacting with intervals of
 Documentation
 -------------
 
-- [API](http://godoc.org/github.com/SaidinWoT/timespan)
+- [API](http://godoc.org/github.com/go-timespan/timespan)
 
 Installation
 ------------
 
 Install timespan using the "go get" command:
 
-	go get github.com/SaidinWoT/timespan
+	go get github.com/gregtzar/go-timespan
 
 Contributing
 ------------
