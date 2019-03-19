@@ -27,6 +27,8 @@ var spans = []Span{
 	New(times[1], durations[1]), // 4:00 - 8:00
 	New(times[2], durations[0]), // 6:00 - 8:00
 	New(times[1], durations[3]), // 2:00 - 4:00
+	NewTimes(times[0], times[1]), // also 2:00 - 4:00
+	NewTimes(times[1], times[0]), // also 2:00 - 4:00
 }
 
 func TestNew(t *testing.T) {
@@ -42,6 +44,9 @@ func TestNew(t *testing.T) {
 	}
 	if spans[6].End() != times[1] {
 		t.Error("Improper timespan end value for negative duration.")
+	}
+	if ! spans[7].Equal(spans[8]) {
+		t.Error("These spans should be equal")
 	}
 }
 
