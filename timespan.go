@@ -14,6 +14,20 @@ type Span struct {
 	start, end time.Time
 }
 
+//New
+func NewTimes(t1, t2 time.Time) Span {
+	start := t1
+	end := t2
+	if end.Before(start) {
+		start, end = end, start
+	}
+
+	return Span{
+		start: start,
+		end:   end,
+	}
+}
+
 //New creates a new span with the given start instant and duration.
 func New(t time.Time, d time.Duration) Span {
 	start := t
